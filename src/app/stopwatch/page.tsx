@@ -1,13 +1,9 @@
 "use client"
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
+import Timer from "@/components/Timer";
+import ControlButtons from "@/components/ControlButtons";
 import Navbar from "@/components/Navbar";
-
-export const Common = styled.div`
-  display: flex;
-  text-align: center;
-  align-items: center;
-`;
 
 export const Content = styled.div`
   display: flex;
@@ -16,63 +12,15 @@ export const Content = styled.div`
   height: calc(100vh - 84px);
 `;
 
-export const Wrapper = styled.main`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6rem;
-  width: 60%;
-`;
-
-export const Subtitle = styled.h2`
-  font-size: 52px; 
-  margin-bottom: 20px; 
-  color: #555; 
-  font-family: Arial, sans-serif;
-`;
-
-export const Sectime = styled.div`
-  font-size: 64px; 
-  color: #333;
-  font-weight: bold; 
-  margin-bottom: 20px;
-`;
-
-export const Buttons = styled.div`
-  display: flex;
-  gap: 20px;
-`;
-
-export const Button = styled.button`
-  padding: 10px 20px; 
-  border-radius: 5px; 
-  font-Size: 16px; 
-  color: white; 
-  cursor: pointer; 
-  border: none; 
-  outline: none; 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-`;
-
-export const PauseBtn = styled(Button)`
-  background-color: #f39c12;
-`;
-
-export const StartBtn = styled(Button)`
-  background-color: #2ecc71;
-`;
-
-export const RestBtn = styled(Button)`
-  background-color: #e74c3c;
-`;
-
-export const ResumeBtn = styled(Button)`
-  background-color: #3498db;
-`;
-
-export const RecordBtn = styled(Button)`
-  background-color: #530c64;
+export const Wrapper = styled.div`
+  &.stop-watch {
+    width: 50%;
+    background-color: #0d0c1b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+  }
 `;
 
 export const RecordList = styled.div`
@@ -82,7 +30,7 @@ export const RecordList = styled.div`
   color: #233849;
   padding: 2rem;
   border: solid 2px #000000;
-  width: 40%;
+  width: 50%;
   overflow-y: scroll;
 `;
 
@@ -100,9 +48,12 @@ export const Record = styled.div`
   flex-direction: column;
 `;
 
-export const RecordWrapper = styled(Common)`
+export const RecordWrapper = styled.div`
   padding: 1rem;
   border-bottom: solid 1px #000;
+  display: flex;
+  text-align: center;
+  align-items: center;
 `;
 
 export const RecordNo = styled.p`
@@ -122,89 +73,60 @@ export const RecordContent = styled.p`
 `;
 
 const StopWatch: React.FC = () => {
-  const [running, setRunning] = useState(false);
-  const [resume, setResume] = useState(false);
-  const [time, setTime] = useState(0);
-  const intervalRef = useRef(null);
-  const startTimeRef = useRef(0);
+  const [isActive, setIsActive] = useState<boolean>(false);
+  const [isPaused, setIsPaused] = useState<boolean>(true);
+  const [time, setTime] = useState<number>(0);
   const [recordList, setRecordList] = useState<number[]>([]);
 
-  const recordStopwatch = () => {
-    setRecordList([...recordList, time]);
-    console.log(recordList);
-  }
+  React.useEffect(() => {
+    let interval = null;
 
-  const pauseStopwatch = () => {
-    clearInterval(intervalRef.current);
-    setRunning(false);
-  }
-
-  const startStopwatch = () => {
-    startTimeRef.current = Date.now() - time * 100;
-    intervalRef.current = setInterval(() => {
-      setTime(Math.floor((Date.now() - startTimeRef.current) / 1000));
-    }, 1000);
-    setRunning(true);
-  }
-
-  const resetStopwatch = () => {
-    clearInterval(intervalRef.current);
-    setTime(0);
-    setRecordList([]);
-    setRunning(false);
-  }
-
-  const resumeStopwatch = () => {
-    console.log(time);
-    startTimeRef.current = Date.now() - time * 1000;
-    console.log(startTimeRef.current)
-    intervalRef.current = setInterval(() => {
-      setTime(Math.floor((Date.now() -
-        startTimeRef.current) / 1000));
-    }, 1000);
-    setRunning(true);
-  }
-
-  useEffect(() => {
-    if (running) {
-      startStopwatch();
+    if (isActive && isPaused === false) {
+      interval = setInterval(() => {
+        setTime((time) => time + 10);
+      }, 10);
+    } else {
+      clearInterval(interval);
     }
     return () => {
-      clearInterval(intervalRef.current);
+      clearInterval(interval);
     };
-  }, [running]);
+  }, [isActive, isPaused]);
+
+  const handleRecord = () => {
+    console.log(time);
+    setRecordList([...recordList, time]);
+  }
+
+  const handleStart = () => {
+    setIsActive(true);
+    setIsPaused(false);
+  };
+
+  const handlePauseResume = () => {
+    setIsPaused(!isPaused);
+  };
+
+  const handleReset = () => {
+    setIsActive(false);
+    setTime(0);
+    setRecordList([]);
+  };
 
   return (
     <>
       <Navbar />
       <Content>
-        <Wrapper>
-          <Subtitle>Stop Watch</Subtitle>
-          <Sectime>{time}s</Sectime>
-          <Buttons>
-            {running ? (
-              <PauseBtn onClick={pauseStopwatch}>
-                Pause
-              </PauseBtn>
-            ) : (
-              <>
-                <StartBtn onClick={startStopwatch}>
-                  Start
-                </StartBtn>
-                <RestBtn onClick={resetStopwatch}>
-                  Reset
-                </RestBtn>
-              </>
-            )}
-            {!running && (
-              <ResumeBtn onClick={resumeStopwatch}>
-                Resume
-              </ResumeBtn>
-            )}
-            <RecordBtn onClick={recordStopwatch}>
-              Record
-            </RecordBtn>
-          </Buttons>
+        <Wrapper className="stop-watch">
+          <Timer time={time} isPaused={isPaused} />
+          <ControlButtons
+            active={isActive}
+            isPaused={isPaused}
+            handleRecord={handleRecord}
+            handleStart={handleStart}
+            handlePauseResume={handlePauseResume}
+            handleReset={handleReset}
+          />
         </Wrapper>
         <RecordList>
           <RecordTitle>List of record.</RecordTitle>
@@ -217,7 +139,7 @@ const StopWatch: React.FC = () => {
               return (
                 <RecordWrapper>
                   <RecordNo>{index + 1}</RecordNo>
-                  <RecordContent>{record}</RecordContent>
+                  <Timer time={record} type='record' />
                 </RecordWrapper>
               )
             })}
