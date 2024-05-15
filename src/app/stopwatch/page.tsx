@@ -79,7 +79,7 @@ const StopWatch: React.FC = () => {
   const [recordList, setRecordList] = useState<number[]>([]);
 
   React.useEffect(() => {
-    let interval = null;
+    let interval: any = 0;
 
     if (isActive && isPaused === false) {
       interval = setInterval(() => {
@@ -94,7 +94,6 @@ const StopWatch: React.FC = () => {
   }, [isActive, isPaused]);
 
   const handleRecord = () => {
-    console.log(time);
     setRecordList([...recordList, time]);
   }
 
@@ -118,7 +117,7 @@ const StopWatch: React.FC = () => {
       <Navbar />
       <Content>
         <Wrapper className="stop-watch">
-          <Timer time={time} isPaused={isPaused} />
+          <Timer time={time} />
           <ControlButtons
             active={isActive}
             isPaused={isPaused}
