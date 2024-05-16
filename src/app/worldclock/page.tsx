@@ -1,117 +1,58 @@
 "use client"
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
+import Timer from "@/components/Timer";
+import ControlButtons from "@/components/ControlButtons";
 import Navbar from "@/components/Navbar";
-
-export const Wrapper = styled.main`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6rem;
-  height: calc(100vh - 84px);
-`;
-
-export const Subtitle = styled.h2`
-  font-size: 24px; 
-  margin-bottom: 20px; 
-  color: #555; 
-  font-family: Arial, sans-serif;
-`;
-
-export const Sectime = styled.div`
-  font-size: 64px; 
-  color: #333;
-  font-weight: bold; 
-  margin-bottom: 20px;
-`;
-
-export const Buttons = styled.div`
-  display: flex;
-  gap: 20px;
-`;
-
-export const Button = styled.button`
-  padding: 10px 20px; 
-  border-radius: 5px; 
-  font-Size: 16px; 
-  color: white; 
-  cursor: pointer; 
-  border: none; 
-  outline: none; 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-`;
-
-export const PauseBtn = styled(Button)`
-  background-color: #f39c12;
-`;
-
-export const StartBtn = styled(Button)`
-  background-color: #2ecc71;
-`;
-
-export const RestBtn = styled(Button)`
-  background-color: #e74c3c;
-`;
-
-export const ResumeBtn = styled(Button)`
-  background-color: #3498db;
-`;
+import { Container } from "./page.styled";
+import TimezoneSelect from "@/components/TimezoneSelect";
+import OptionTypeBase from 'react-select';
 
 const StopWatch: React.FC = () => {
-  const [running, setRunning] = useState(false);
-  const [time, setTime] = useState(0);
-  const intervalRef = useRef(null); 
-  const startTimeRef = useRef(0);
+  const [currentTime, setCurrentTime] = useState<string>('');
+  const [otherTime, setOtherTime] = useState<string>('');
+  const [selectedOption, setSelectedOption] = useState<OptionTypeBase | null>(null);
 
-  const pauseStopwatch = () => {
-    console.log("pause!");
-  }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentTime = new Date().toLocaleTimeString();
+      setCurrentTime(currentTime);
+    }, 1000);
 
-  const startStopwatch = () => {
-    startTimeRef.current = Date.now() - time * 100; 
-    intervalRef.current = setInterval(() => { 
-        setTime(Math.floor((Date.now() - startTimeRef.current) / 1000)); 
-    }, 1000); 
-    setRunning(true);
-  }
+    return () => clearInterval(interval);
+  }, []);
 
-  const resetStopwatch = () => {
-    console.log("reset!");
-  }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentTime = new Date().toLocaleTimeString("en-US", {timeZone: selectedOption?.value});
+      setOtherTime(currentTime);
+    }, 1000);
 
-  const resumeStopwatch = () => {
-    console.log("resume!");
-  }
+    return () => clearInterval(interval);
+  }, [selectedOption]);
+
+  const handleChange = (selectedOption: OptionTypeBase | null) => {
+    setSelectedOption(selectedOption);
+    // You can use the selected timezone value here
+    console.log(selectedOption);
+  };
+
+  const timezoneOptions: Timezone[] = [
+    { value: 'Etc/GMT+12', label: 'GMT-12:00' },
+    { value: 'Etc/GMT+11', label: 'GMT-11:00' },
+    // Add more timezones as needed
+  ];
 
   return (
     <>
       <Navbar />
-      <Wrapper>
-        <Subtitle>Stop Watch</Subtitle>
-        <Sectime>{time}s</Sectime>
-        <Buttons>
-          {running ? (
-            <PauseBtn onClick={pauseStopwatch}>
-              Pause
-            </PauseBtn>
-          ) : (
-            <>
-              <StartBtn onClick={startStopwatch}>
-                Start
-              </StartBtn>
-              <RestBtn onClick={resetStopwatch}>
-                Reset
-              </RestBtn>
-            </>
-          )}
-          {!running && (
-            <ResumeBtn onClick={resumeStopwatch}>
-              Resume
-            </ResumeBtn>
-          )}
-        </Buttons>
-      </Wrapper>
+      <Container>
+        <div className="world-clock">
+          {/* <Timer time={time} type="world" /> */}
+          <p className="clock">{selectedOption == null ? currentTime : otherTime}</p>
+          <TimezoneSelect selectedOption={selectedOption} timezoneOptions={timezoneOptions} handleChange={handleChange}  />
+        </div>
+      </Container>
     </>
   );
 }
