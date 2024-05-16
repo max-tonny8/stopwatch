@@ -18,12 +18,10 @@ export const Content = styled.p`
 
 const Home: React.FC = () => {
   return (
-    <>
-      <Wrapper>
-        <Navbar />
-        <Content>My First Project!</Content>
-      </Wrapper>
-    </>
+    <Wrapper>
+      <Navbar />
+      <Content>My First Project!</Content>
+    </Wrapper>
   );
 }
 

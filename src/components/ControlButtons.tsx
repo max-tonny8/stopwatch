@@ -17,10 +17,21 @@ export const Wrapper = styled.div`
         justify-content: space-around;
     }
 
+    @media (max-width: 1246px) {
+        .btn-grp {
+            flex-direction: column;
+        }
+        .btn {
+            margin: 0.6rem !important;
+            width: 140px !important;
+            height: 32px !important;
+        }
+    }
+
     .btn {
         font-family: Verdana, Geneva, Tahoma, sans-serif;
-        width: 10vw;
-        height: 5vh;
+        width: 192px;
+        height: 52px;
         border-radius: 14px;
         margin: 0px 6px;
         display: flex;

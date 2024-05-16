@@ -1,17 +1,15 @@
 "use client"
-import React, { useState, useRef, useEffect } from "react";
-import styled from "styled-components";
-import Timer from "@/components/Timer";
-import ControlButtons from "@/components/ControlButtons";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import { Container } from "./page.styled";
 import TimezoneSelect from "@/components/TimezoneSelect";
-import OptionTypeBase from 'react-select';
 
 const StopWatch: React.FC = () => {
   const [currentTime, setCurrentTime] = useState<string>('');
   const [otherTime, setOtherTime] = useState<string>('');
-  const [selectedOption, setSelectedOption] = useState<OptionTypeBase | null>(null);
+  const [selectedOption, setSelectedOption] = useState<Timezone>(
+    { value: 'Etc/GMT+12', label: 'GMT-12:00' }
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -23,15 +21,20 @@ const StopWatch: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    setTime({ timeZone: selectedOption.value })
     const interval = setInterval(() => {
-      const currentTime = new Date().toLocaleTimeString("en-US", {timeZone: selectedOption?.value});
-      setOtherTime(currentTime);
+      setTime({ timeZone: selectedOption.value })
     }, 1000);
 
     return () => clearInterval(interval);
   }, [selectedOption]);
 
-  const handleChange = (selectedOption: OptionTypeBase | null) => {
+  const setTime = (val: any) => {
+    const currentTime = new Date().toLocaleTimeString("en-US", val);
+    setOtherTime(currentTime);
+  }
+
+  const handleChange = (selectedOption: Timezone) => {
     setSelectedOption(selectedOption);
     // You can use the selected timezone value here
     console.log(selectedOption);
@@ -50,7 +53,7 @@ const StopWatch: React.FC = () => {
         <div className="world-clock">
           {/* <Timer time={time} type="world" /> */}
           <p className="clock">{selectedOption == null ? currentTime : otherTime}</p>
-          <TimezoneSelect selectedOption={selectedOption} timezoneOptions={timezoneOptions} handleChange={handleChange}  />
+          <TimezoneSelect selectedOption={[selectedOption]} timezoneOptions={timezoneOptions} handleChange={handleChange} />
         </div>
       </Container>
     </>

@@ -1,49 +1,22 @@
 "use client"
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import Timer from "@/components/Timer";
 import ControlButtons from "@/components/ControlButtons";
 import Navbar from "@/components/Navbar";
 import * as S from "./page.styled";
+import { useTimeContext } from "@/context/TimeContext";
 
 const StopWatch: React.FC = () => {
-  const [isActive, setIsActive] = useState<boolean>(false);
-  const [isPaused, setIsPaused] = useState<boolean>(true);
-  const [time, setTime] = useState<number>(0);
-  const [recordList, setRecordList] = useState<number[]>([]);
-
-  useEffect(() => {
-    let interval: any = 0;
-
-    if (isActive && isPaused === false) {
-      interval = setInterval(() => {
-        setTime((time) => time + 10);
-      }, 10);
-    } else {
-      clearInterval(interval);
-    }
-    return () => {
-      clearInterval(interval);
-    };
-  }, [isActive, isPaused]);
-
-  const handleRecord = () => {
-    setRecordList([...recordList, time]);
-  }
-
-  const handleStart = () => {
-    setIsActive(true);
-    setIsPaused(false);
-  };
-
-  const handlePauseResume = () => {
-    setIsPaused(!isPaused);
-  };
-
-  const handleReset = () => {
-    setIsActive(false);
-    setTime(0);
-    setRecordList([]);
-  };
+  const {
+    time,
+    isActive,
+    isPaused,
+    recordList,
+    handleRecord,
+    handleStart,
+    handlePauseResume,
+    handleReset,
+  } = useTimeContext();
 
   return (
     <>

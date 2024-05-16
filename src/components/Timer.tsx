@@ -8,12 +8,19 @@ export const Wrapper = styled.div<{$style: string}>`
         height: 12%;
         justify-content: center;
         align-items: center;
+        width: ${({$style}) => $style === 'record' ? '70%' : 'auto '};
     }
     
     .digits {
         font-family: Verdana, Geneva, Tahoma, sans-serif;
         font-size: ${({$style}) => $style === 'record' ? '24px' : '4rem'};
         color: #a89494;
+    }
+    
+    @media (max-width: 1246px) {
+        .digits {
+            font-size: ${({$style}) => $style === 'record' ? '16px' : '2rem'};
+        }
     }
     
     .mili-sec {

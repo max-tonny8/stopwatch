@@ -20,10 +20,29 @@ const Container = styled.div`
   }
 
   .clock {
+    display: flex;
     width: 40%;
     font-size: 5rem;
     font-weight: 800;
     color: #b3a5a5;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 1246px) {
+    .world-clock {
+      width: 100%;
+      flex-direction: column;
+      gap: 60px;
+    }
+
+    .select-wrapper {
+      width: 60%;
+    }
+
+    .clock {
+      width: 100%;
+    }
   }
 `;
 
