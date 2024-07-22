@@ -27,6 +27,7 @@ const Container = styled.div`
     color: #b3a5a5;
     align-items: center;
     justify-content: center;
+    text-shadow: 3px 3px 3px #d6d2d2;
   }
 
   @media (max-width: 1246px) {
