@@ -20,14 +20,12 @@ const Container = styled.div`
   }
 
   .clock {
-    display: flex;
-    width: 40%;
+    width: 35%;
     font-size: 5rem;
-    font-weight: 800;
+    font-weight: 500;
     color: #b3a5a5;
-    align-items: center;
-    justify-content: center;
     text-shadow: 3px 3px 3px #d6d2d2;
+    text-wrap: nowrap;
   }
 
   @media (max-width: 1246px) {
